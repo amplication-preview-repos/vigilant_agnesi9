@@ -1,0 +1,45 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Transaction {
+  amount    Float?
+  createdAt DateTime                  @default(now())
+  id        String                    @id @default(cuid())
+  timestamp DateTime?
+  typeField EnumTransactionTypeField?
+  updatedAt DateTime                  @updatedAt
+  wallet    Wallet?                   @relation(fields: [walletId], references: [id])
+  walletId  String?
+}
+
+model Event {
+  createdAt DateTime            @default(now())
+  id        String              @id @default(cuid())
+  payload   Json?
+  timestamp DateTime?
+  typeField EnumEventTypeField?
+  updatedAt DateTime            @updatedAt
+}
+
+model Wallet {
+  balance      Float?
+  createdAt    DateTime      @default(now())
+  id           String        @id @default(cuid())
+  transactions Transaction[]
+  updatedAt    DateTime      @updatedAt
+  userId       String?
+}
+
+enum EnumTransactionTypeField {
+  Option1
+}
+
+enum EnumEventTypeField {
+  Option1
+}
